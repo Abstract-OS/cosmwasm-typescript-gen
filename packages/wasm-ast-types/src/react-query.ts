@@ -221,35 +221,45 @@ export const createReactQueryHookInterface = ({
         tsPropertySignature(
             t.identifier('options'),
             t.tsTypeAnnotation(
-                t.tsTypeReference(
-                    t.identifier('UseQueryOptions'),
-                    t.tsTypeParameterInstantiation(
-                        [
-                            t.tsUnionType(
-                                [
+                t.tSIntersectionType([
+                    t.tsTypeReference(
+                        t.identifier('Omit'),
+                        t.tsTypeParameterInstantiation([
+                            t.tsTypeReference(
+                                t.identifier('UseQueryOptions'),
+                                t.tsTypeParameterInstantiation([
+                                    t.tsUnionType([
+                                        t.tsTypeReference(
+                                            t.identifier(responseType)
+                                        ),
+                                        t.tsUndefinedKeyword()
+                                    ]),
+                                    t.tsTypeReference(t.identifier('Error')),
                                     t.tsTypeReference(
                                         t.identifier(responseType)
                                     ),
-                                    t.tsUndefinedKeyword()
-                                ]
+                                    t.tsArrayType(
+                                        t.tsParenthesizedType(
+                                            t.tsUnionType([
+                                                t.tsStringKeyword(),
+                                                t.tsUndefinedKeyword()
+                                            ])
+                                        )
+                                    ),
+                                ])
                             ),
-                            t.tsTypeReference(t.identifier('Error')),
-                            t.tsTypeReference(
-                                t.identifier(responseType)
-                            ),
-                            t.tsArrayType(
-                                t.tsParenthesizedType(
-                                    t.tsUnionType(
-                                        [
-                                            t.tsStringKeyword(),
-                                            t.tsUndefinedKeyword()
-                                        ]
-                                    )
-                                )
+                            t.tsLiteralType(t.stringLiteral("'queryKey' | 'queryFn' | 'initialData'"))
+                        ])
+                    ),
+                    t.tSTypeLiteral([
+                        t.tsPropertySignature(
+                            t.identifier('initialData?'),
+                            t.tsTypeAnnotation(
+                                t.tsUndefinedKeyword()
                             )
-                        ]
-                    )
-                )
+                        )
+                    ])
+                ]),
             ),
             true
         )

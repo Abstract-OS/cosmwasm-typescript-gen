@@ -22,7 +22,7 @@ export default async (name: string, schemas: any[], outPath: string) => {
     const body = [];
 
     body.push(
-        w.importStmt(['useQuery', 'UseQueryOptions'], 'react-query')
+        w.importStmt(['useQuery', 'UseQueryOptions'], '@tanstack/react-query')
     );
 
     body.push(
