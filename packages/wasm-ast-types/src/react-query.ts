@@ -18,6 +18,8 @@ interface ReactQueryHookQuery {
     jsonschema: any;
 }
 
+import type { Expression } from '@babel/types'
+
 export const createReactQueryHooks = (
     queryMsg: QueryMsg,
     contractName: string,
@@ -108,20 +110,11 @@ export const createReactQueryHook = ({
             ],
             t.blockStatement(
                 [
-
                     t.returnStatement(
                         callExpression(
                             t.identifier('useQuery'),
                             [
-                                t.arrayExpression([
-                                    t.stringLiteral(hookKeyName),
-                                    t.optionalMemberExpression(
-                                        t.identifier('client'),
-                                        t.identifier('contractAddress'),
-                                        false,
-                                        true
-                                    ),
-                                ]),
+                                t.arrayExpression(generateUseQueryQueryKey(hookKeyName, props)),
                                 t.arrowFunctionExpression(
                                     [],
                                     t.conditionalExpression(
@@ -192,7 +185,6 @@ export const createReactQueryHook = ({
 
         )
     )
-
 };
 
 interface ReactQueryHookQueryInterface {
@@ -286,6 +278,31 @@ export const createReactQueryHookInterface = ({
     ))
 
 };
+
+function generateUseQueryQueryKey(hookKeyName: string, props: string[]): Array<Expression> {
+    const queryKey: Array<Expression> = [
+        t.stringLiteral(hookKeyName),
+        t.optionalMemberExpression(
+            t.identifier('client'),
+            t.identifier('contractAddress'),
+            false,
+            true
+        )
+    ];
+
+    if (props.includes('args')) {
+        queryKey.push(t.callExpression(
+            t.memberExpression(
+                t.identifier('JSON'),
+                t.identifier('stringify')
+            ),
+            [
+                t.identifier('args')
+            ]
+        ))
+    }
+    return queryKey
+}
 
 const getProps = (jsonschema, camelize) => {
     const keys = Object.keys(jsonschema.properties ?? {});
